@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import rbac.sukhonthaosod.jarurawee.myrbac.R;
 import rbac.sukhonthaosod.jarurawee.myrbac.manager.MyAlert;
+import rbac.sukhonthaosod.jarurawee.myrbac.manager.PostUserToServer;
 
 /**
  * Created by Administrator on 6/8/2560.
@@ -65,6 +66,7 @@ public class SignUpFragment extends Fragment{
                 } else {
                     //No Space
                     Log.d("6AugV1", "No Space");
+                    uploadValue();
                 }
 
 
@@ -73,12 +75,34 @@ public class SignUpFragment extends Fragment{
         });
     }
 
+    private void uploadValue() {
+
+        try {
+
+            PostUserToServer postUserToServer = new PostUserToServer(getActivity());
+            postUserToServer.execute(nameString, userString, passwordString, "http://androidthai.in.th/rbac/addDataEyes.php");
+            String strResult = postUserToServer.get();
+            Log.d("6AugV1", "Result ==>" + strResult);
+
+            if (Boolean.parseBoolean(strResult)) {
+                getActivity().getSupportFragmentManager().popBackStack();
+
+            } else {
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void backController() {
         ImageView imageView = (ImageView) getView().findViewById(R.id.imvBack);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.mainContainer, new MainFragment())
+                        .commit();
             }
         });
     }
